@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Assignment - {{ assignment.title }}{% endblock %}
+
+{% block content %}
+<div class="submit-assignment">
+    <h2>Submit Assignment: {{ assignment.title }}</h2>
+    <p>{{ assignment.description }}</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    <a href="{% url 'course_detail' assignment.course.id %}">Back to Course</a>
+</div>
+{% endblock %}

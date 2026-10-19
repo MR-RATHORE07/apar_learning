@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Content - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="add-content">
+    <h2>Add Content to {{ course.title }}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Content</button>
+    </form>
+    <a href="{% url 'course_detail' course.id %}">Back to Course</a>
+</div>
+{% endblock %}

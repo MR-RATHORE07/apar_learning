@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Send Message{% endblock %}
+
+{% block content %}
+<div class="send-message">
+    <h2>Send Message</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send</button>
+    </form>
+    <a href="{% url 'inbox' %}">Back to Inbox</a>
+</div>
+{% endblock %}

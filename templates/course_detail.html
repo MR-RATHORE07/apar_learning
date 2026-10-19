@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - APAR Learning{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="course-header">
+        <div class="course-image-large">
+            {% if course.image %}
+                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="course-img-large">
+            {% else %}
+                <img src="{% static 'images/placeholder-course.jpg' %}" alt="Default Course Image" class="course-img-large">
+            {% endif %}
+        </div>
+        <div class="course-info-large">
+            <h2>{{ course.title }}</h2>
+            <p class="course-description">{{ course.description }}</p>
+            <p class="instructor">Instructor: {{ course.instructor.username }}</p>
+            <p class="course-meta">Created on {{ course.created_at|date:"M d, Y" }} · Updated on {{ course.updated_at|date:"M d, Y" }}</p>
+
+            {% if user.is_authenticated and user.profile.role == 'student' %}
+                {% if not is_enrolled %}
+                    <a href="{% url 'enroll_course' course.id %}" class="btn btn-enroll">Enroll in Course</a>
+                {% else %}
+                    <div class="enrolled-status">
+                        <span class="enrolled-badge">✓ Enrolled</span>
+                        <a href="{% url 'submit_feedback' course.id %}" class="btn btn-secondary">Submit Feedback</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if user.is_authenticated and user.profile.role == 'instructor' and course.instructor == user %}
+                <div class="instructor-actions">
+                    <a href="{% url 'create_assignment' course.id %}" class="btn">Add Assignment</a>
+                    <a href="{% url 'create_quiz' course.id %}" class="btn">Add Quiz</a>
+                    <a href="{% url 'add_content' course.id %}" class="btn">Add Content</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if is_enrolled %}
+        <div class="course-content">
+            <div class="course-summary">
+                <div class="summary-card">
+                    <h3>Course Overview</h3>
+                    <p><strong>Assignments:</strong> {{ assignments|length }}</p>
+                    <p><strong>Quizzes:</strong> {{ quizzes|length }}</p>
+                    <p><strong>Content Items:</strong> {{ contents|length }}</p>
+                    <p><strong>Instructor:</strong> {{ course.instructor.username }}</p>
+                </div>
+            </div>
+
+            <h3>Course Assignments</h3>
+            <div class="assignments-list">
+                {% for assignment in assignments %}
+                    <div class="card assignment-card">
+                        <h4>{{ assignment.title }}</h4>
+                        <p>{{ assignment.description }}</p>
+                        <p class="due-date">Due: {{ assignment.due_date|date:"M d, Y" }}</p>
+                        {% if user.profile.role == 'student' %}
+                            <a href="{% url 'submit_assignment' assignment.id %}" class="btn">Submit Assignment</a>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p>No assignments available yet.</p>
+                {% endfor %}
+            </div>
+
+            <h3>Course Quizzes</h3>
+            <div class="quizzes-list">
+                {% for quiz in quizzes %}
+                    <div class="card quiz-card">
+                        <h4>{{ quiz.title }}</h4>
+                        <p>{{ quiz.description }}</p>
+                        {% if quiz.time_limit %}
+                            <p class="time-limit">Time Limit: {{ quiz.time_limit }}</p>
+                        {% endif %}
+                        {% if user.profile.role == 'student' %}
+                            <a href="{% url 'take_quiz' quiz.id %}" class="btn">Take Quiz</a>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p>No quizzes available yet.</p>
+                {% endfor %}
+            </div>
+
+            <h3>Course Content</h3>
+            <div class="content-list">
+                {% for content in contents %}
+                    <div class="card content-card {% if content.is_required %}required{% else %}optional{% endif %}">
+                        <div class="content-header">
+                            <h4>
+                                {% if content.content_type == 'video' %}🎥
+                                {% elif content.content_type == 'document' %}📄
+                                {% elif content.content_type == 'image' %}🖼️
+                                {% elif content.content_type == 'link' %}🔗
+                                {% elif content.content_type == 'text' %}📝
+                                {% elif content.content_type == 'presentation' %}📊
+                                {% elif content.content_type == 'audio' %}🎵
+                                {% elif content.content_type == 'interactive' %}🎮
+                                {% endif %}
+                                {{ content.title }}
+                            </h4>
+                            <div class="content-meta">
+                                {% if content.duration %}
+                                    <span class="duration">⏱️ {{ content.duration }} min</span>
+                                {% endif %}
+                                {% if content.is_required %}
+                                    <span class="required-badge">Required</span>
+                                {% else %}
+                                    <span class="optional-badge">Optional</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if content.description %}
+                            <p class="content-description">{{ content.description|truncatechars:150 }}</p>
+                        {% endif %}
+                        <div class="content-preview">
+                            {% if content.content_type == 'video' %}
+                                <div class="document-icon">🎥 Video Content</div>
+                            {% elif content.content_type == 'image' and content.file %}
+                                <img src="{{ content.file.url }}" alt="{{ content.title }}" class="content-thumbnail">
+                            {% elif content.content_type == 'document' %}
+                                <div class="document-icon">📄 Document Content</div>
+                            {% elif content.content_type == 'text' and content.text_content %}
+                                <div class="text-preview">{{ content.text_content|truncatechars:100|linebreaks }}</div>
+                            {% elif content.content_type == 'link' %}
+                                <p class="external-link">{{ content.url }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="content-actions">
+                            <a href="{% url 'content_detail' content.id %}" class="btn">👁️ View Content</a>
+                            {% if user.profile.role == 'student' %}
+                                {% if content.progress and content.progress.completed %}
+                                    <span class="completed-indicator">✓ Completed</span>
+                                {% else %}
+                                    <a href="{% url 'mark_completed' content.id %}" class="btn btn-success">✅ Complete</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No content available yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="not-enrolled">
+            <div class="card">
+                <h3>Enroll to Access Course Content</h3>
+                <p>You need to enroll in this course to access assignments, quizzes, and content.</p>
+                {% if user.is_authenticated and user.profile.role == 'student' %}
+                    <a href="{% url 'enroll_course' course.id %}" class="btn btn-enroll">Enroll Now</a>
+                {% else %}
+                    <p><a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a> to enroll in courses.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

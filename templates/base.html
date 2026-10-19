@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}APAR Learning{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">APAR Learning</div>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'my_courses' %}">My Courses</a></li>
+                    <li><a href="{% url 'inbox' %}">Messages</a></li>
+                    {% if user.profile.role == 'admin' %}
+                        <li class="user-info admin-only">
+                            <span class="role role-{{ user.profile.role }}">{{ user.profile.get_role_display }}</span>
+                        </li>
+                    {% else %}
+                        <li class="user-info">
+                            <span class="username">{{ user.username }}</span>
+                            <span class="role role-{{ user.profile.role }}">{{ user.profile.get_role_display }}</span>
+                        </li>
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2026 APAR Learning</p>
+    </footer>
+    {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Feedback - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="submit-feedback">
+    <h2>Submit Feedback for {{ course.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Feedback</button>
+    </form>
+    <a href="{% url 'course_detail' course.id %}">Back to Course</a>
+</div>
+{% endblock %}

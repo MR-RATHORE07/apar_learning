@@ -1,0 +1,460 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}APAR Learning - Transform Your Future{% endblock %}
+
+{% block content %}
+<!-- Carousel Hero Section -->
+<section class="carousel-hero">
+    <div class="carousel-container">
+        <!-- Slide 1 -->
+        <div class="carousel-slide active" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="slide-content">
+                <div class="slide-text">
+                    <h1 class="slide-title">Master New Skills</h1>
+                    <p class="slide-subtitle">Shape Your Future with Expert-Led Courses</p>
+                    <div class="slide-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">10,000+</span>
+                            <span class="stat-label">Active Learners</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">150+</span>
+                            <span class="stat-label">Instructors</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">95%</span>
+                            <span class="stat-label">Success Rate</span>
+                        </div>
+                    </div>
+                    <div class="slide-actions">
+                        <a href="{% url 'course_list' %}" class="btn-hero-primary">
+                            <i class="fas fa-rocket"></i> Start Learning
+                        </a>
+                        {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="btn-hero-secondary">
+                            <i class="fas fa-user-plus"></i> Sign Up Free
+                        </a>
+                        {% else %}
+                        <a href="{% url 'dashboard' %}" class="btn-hero-secondary">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="slide-visual">
+                    <div class="floating-element" style="animation: float 6s ease-in-out infinite;">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="floating-element" style="animation: float 8s ease-in-out infinite 1s;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-slide" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <div class="slide-content">
+                <div class="slide-text">
+                    <h1 class="slide-title">Learn From Experts</h1>
+                    <p class="slide-subtitle">Industry Professionals Teaching Real-World Skills</p>
+                    <div class="slide-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">500+</span>
+                            <span class="stat-label">Courses</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">50+</span>
+                            <span class="stat-label">Categories</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">24/7</span>
+                            <span class="stat-label">Support</span>
+                        </div>
+                    </div>
+                    <div class="slide-actions">
+                        <a href="{% url 'course_list' %}" class="btn-hero-primary">
+                            <i class="fas fa-search"></i> Explore Courses
+                        </a>
+                        <a href="#categories" class="btn-hero-secondary">
+                            <i class="fas fa-arrow-down"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="slide-visual">
+                    <div class="floating-element" style="animation: float 7s ease-in-out infinite;">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-slide" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <div class="slide-content">
+                <div class="slide-text">
+                    <h1 class="slide-title">Transform Your Career</h1>
+                    <p class="slide-subtitle">Join Thousands of Successful Learners Worldwide</p>
+                    <div class="slide-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">100%</span>
+                            <span class="stat-label">Certified</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">3 Months</span>
+                            <span class="stat-label">Average Training</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">+50%</span>
+                            <span class="stat-label">Salary Growth</span>
+                        </div>
+                    </div>
+                    <div class="slide-actions">
+                        {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="btn-hero-primary">
+                            <i class="fas fa-check"></i> Get Started Free
+                        </a>
+                        {% else %}
+                        <a href="{% url 'course_list' %}" class="btn-hero-primary">
+                            <i class="fas fa-check"></i> View Courses
+                        </a>
+                        {% endif %}
+                        <a href="#features" class="btn-hero-secondary">
+                            <i class="fas fa-info-circle"></i> Why APAR?
+                        </a>
+                    </div>
+                </div>
+                <div class="slide-visual">
+                    <div class="floating-element" style="animation: float 5s ease-in-out infinite;">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carousel Controls -->
+        <button class="carousel-btn carousel-prev" onclick="changeSlide(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="carousel-btn carousel-next" onclick="changeSlide(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators">
+            <button class="indicator active" onclick="currentSlide(0)"></button>
+            <button class="indicator" onclick="currentSlide(1)"></button>
+            <button class="indicator" onclick="currentSlide(2)"></button>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats Section -->
+<section class="quick-stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-book-open"></i>
+                <h3>Comprehensive Curriculum</h3>
+                <p>500+ courses covering latest technologies and skills</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3>Expert Community</h3>
+                <p>Learn from industry professionals and mentors</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-certificate"></i>
+                <h3>Recognized Certificates</h3>
+                <p>Earn valuable credentials employers respect</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Learn Anywhere</h3>
+                <p>Access courses on desktop, tablet, or mobile</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Courses Section -->
+<section class="featured-courses" id="courses">
+    <div class="container">
+        <div class="section-header">
+            <h2>Featured Courses</h2>
+            <p>Start your learning journey with our most popular courses</p>
+        </div>
+        <div class="courses-grid">
+            {% for course in courses %}
+            <div class="course-card">
+                <div class="course-image">
+                    {% if course.image %}
+                    <img src="{{ course.image.url }}" alt="{{ course.title }}">
+                    {% else %}
+                    <img src="{% static 'images/placeholder-course.jpg' %}" alt="{{ course.title }}" onerror="this.style.display='none'">
+                    {% endif %}
+                    <div class="course-label">Popular</div>
+                </div>
+                <div class="course-body">
+                    <h3>{{ course.title }}</h3>
+                    <p>{{ course.description|truncatechars:80 }}</p>
+                    <div class="course-info">
+                        <span class="instructor">
+                            <i class="fas fa-user"></i>
+                            {{ course.instructor.user.get_full_name|default:course.instructor.user.username }}
+                        </span>
+                        <span class="rating">
+                            <i class="fas fa-star"></i> 4.8 (320 reviews)
+                        </span>
+                    </div>
+                    <a href="{% url 'course_detail' course.id %}" class="btn-learn-more">
+                        View Course →
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-footer">
+            <a href="{% url 'course_list' %}" class="btn-primary-large">
+                Explore All Courses <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Learning Categories Section -->
+<section class="learning-categories" id="categories">
+    <div class="container">
+        <div class="section-header">
+            <h2>Learning Paths</h2>
+            <p>Choose your learning path and start your journey</p>
+        </div>
+        <div class="categories-grid">
+            <div class="category-item">
+                <div class="category-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h4>Programming & Development</h4>
+                <p>Python, JavaScript, React, Django, and more</p>
+                <a href="{% url 'course_list' %}">Explore →</a>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h4>Data Science & AI</h4>
+                <p>Machine Learning, Data Analysis, and AI</p>
+                <a href="{% url 'course_list' %}">Explore →</a>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h4>Web & Mobile Apps</h4>
+                <p>React, Vue, Flutter, and modern frameworks</p>
+                <a href="{% url 'course_list' %}">Explore →</a>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>Cybersecurity</h4>
+                <p>Network Security, Ethical Hacking, and Defense</p>
+                <a href="{% url 'course_list' %}">Explore →</a>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <h4>Cloud Computing</h4>
+                <p>AWS, Azure, Google Cloud, and DevOps</p>
+                <a href="{% url 'course_list' %}">Explore →</a>
+            </div>
+            <div class="category-item">
+                <div class="category-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h4>DevOps & Infrastructure</h4>
+                <p>Docker, Kubernetes, CI/CD, and automation</p>
+                <a href="{% url 'course_list' %}">Explore →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="features-section" id="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>Why Choose APAR Learning?</h2>
+            <p>Experience the difference with our innovative learning platform</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-number">01</div>
+                <i class="fas fa-user-tie"></i>
+                <h4>Expert Instructors</h4>
+                <p>Learn from industry leaders with 10+ years of experience in their fields</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">02</div>
+                <i class="fas fa-video"></i>
+                <h4>Interactive Learning</h4>
+                <p>Videos, quizzes, projects, and real-world assignments for hands-on experience</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">03</div>
+                <i class="fas fa-trophy"></i>
+                <h4>Recognized Certificates</h4>
+                <p>Earn certificates that employers recognize and value in your industry</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">04</div>
+                <i class="fas fa-comments"></i>
+                <h4>Community Support</h4>
+                <p>Connect with peers, ask questions, and get help from our community</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">05</div>
+                <i class="fas fa-infinity"></i>
+                <h4>Lifetime Access</h4>
+                <p>Once enrolled, access course materials forever with regular updates</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">06</div>
+                <i class="fas fa-chart-line"></i>
+                <h4>Track Your Progress</h4>
+                <p>Monitor your learning progress with detailed analytics and reports</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Student Success Stories</h2>
+            <p>Real stories from learners who transformed their careers</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-item">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"APAR Learning completely changed my career trajectory. The Python course was exceptional, and I landed my dream job as a data analyst within 3 months of completion."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div>
+                        <h4>Aman Singh Rathore</h4>
+                        <span>Data Analyst at TechCorp</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"The Django course was incredibly comprehensive. I went from knowing nothing about web development to building full-stack applications in just 2 months!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div>
+                        <h4>Raj Viswakarma</h4>
+                        <span>Full-Stack Developer</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"The cybersecurity course opened my eyes to the importance of online security. The practical exercises were incredibly valuable for understanding real-world threats."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div>
+                        <h4>Prayag Raj Chauhan</h4>
+                        <span>Security Consultant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-final">
+    <div class="container">
+        <div class="cta-box">
+            <h2>Ready to Level Up Your Skills?</h2>
+            <p>Join thousands of students achieving their goals with APAR Learning</p>
+            {% if not user.is_authenticated %}
+            <div class="cta-buttons">
+                <a href="{% url 'register' %}" class="btn-cta-primary">Create Free Account</a>
+                <a href="{% url 'login' %}" class="btn-cta-secondary">Sign In</a>
+            </div>
+            {% else %}
+            <div class="cta-buttons">
+                <a href="{% url 'course_list' %}" class="btn-cta-primary">Browse Courses</a>
+                <a href="{% url 'dashboard' %}" class="btn-cta-secondary">Go to Dashboard</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Carousel JavaScript -->
+<script>
+let currentSlideIndex = 0;
+const slideInterval = 5000; // Change slide every 5 seconds
+
+function changeSlide(n) {
+    showSlide(currentSlideIndex += n);
+}
+
+function currentSlide(n) {
+    showSlide(currentSlideIndex = n);
+}
+
+function showSlide(n) {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    if (n >= slides.length) {
+        currentSlideIndex = 0;
+    }
+    if (n < 0) {
+        currentSlideIndex = slides.length - 1;
+    }
+    
+    slides.forEach(slide => slide.classList.remove('active'));
+    indicators.forEach(indicator => indicator.classList.remove('active'));
+    
+    slides[currentSlideIndex].classList.add('active');
+    indicators[currentSlideIndex].classList.add('active');
+}
+
+// Auto-play carousel
+setInterval(() => {
+    changeSlide(1);
+}, slideInterval);
+</script>
+{% endblock %}

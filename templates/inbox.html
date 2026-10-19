@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+<div class="inbox">
+    <h2>My Messages</h2>
+    <a href="{% url 'send_message' %}">Send New Message</a>
+    {% for message in messages %}
+        <div class="message">
+            <p><strong>From:</strong> {{ message.sender.username }}</p>
+            <p>{{ message.message }}</p>
+            <p><small>{{ message.sent_at }}</small></p>
+        </div>
+    {% empty %}
+        <p>No messages.</p>
+    {% endfor %}
+</div>
+{% endblock %}

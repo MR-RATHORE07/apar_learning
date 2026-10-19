@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Course - APAR Learning{% endblock %}
+
+{% block content %}
+<div class="create-course-container">
+    <h2>Create New Course</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Course</button>
+    </form>
+    <a href="{% url 'course_list' %}">Back to Courses</a>
+</div>
+{% endblock %}

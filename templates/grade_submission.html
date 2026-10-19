@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Grade Submission{% endblock %}
+
+{% block content %}
+<div class="grade-submission">
+    <h2>Grade Submission for {{ submission.assignment.title }}</h2>
+    <p>Student: {{ submission.student.username }}</p>
+    {% if submission.file %}
+        <a href="{{ submission.file.url }}">Download Submission</a>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Grade</button>
+    </form>
+    <a href="{% url 'course_detail' submission.assignment.course.id %}">Back to Course</a>
+</div>
+{% endblock %}

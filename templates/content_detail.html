@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ content.title }} - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content-navigation">
+        <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">← Back to Course</a>
+        <h2>{{ course.title }}</h2>
+    </div>
+
+    <div class="content-detail">
+        <div class="content-header">
+            <h3>{{ content.title }}</h3>
+            {% if content.duration %}
+                <span class="content-duration">⏱️ {{ content.duration }} minutes</span>
+            {% endif %}
+            {% if content.is_required %}
+                <span class="content-required">Required</span>
+            {% else %}
+                <span class="content-optional">Optional</span>
+            {% endif %}
+        </div>
+
+        {% if content.description %}
+            <div class="content-description">
+                <p>{{ content.description }}</p>
+            </div>
+        {% endif %}
+
+        <div class="content-body">
+            {% if content.content_type == 'video' %}
+                <div class="video-container">
+                    {% if content.video_url %}
+                        <iframe src="{{ content.video_url }}" frameborder="0" allowfullscreen class="content-video"></iframe>
+                    {% elif content.file %}
+                        <video controls class="content-video">
+                            <source src="{{ content.file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                </div>
+            {% elif content.content_type == 'document' %}
+                <div class="document-container">
+                    {% if content.file %}
+                        <div class="document-preview">
+                            <iframe src="{{ content.file.url }}" class="document-iframe"></iframe>
+                            <div class="document-actions">
+                                <a href="{{ content.file.url }}" class="btn" target="_blank">📄 Download Document</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif content.content_type == 'image' %}
+                <div class="image-container">
+                    {% if content.file %}
+                        <img src="{{ content.file.url }}" alt="{{ content.title }}" class="content-image-large">
+                    {% endif %}
+                </div>
+            {% elif content.content_type == 'link' %}
+                <div class="link-container">
+                    {% if content.url %}
+                        <div class="link-preview">
+                            <p>🌐 External Link: <a href="{{ content.url }}" target="_blank" class="external-link">{{ content.url }}</a></p>
+                            <a href="{{ content.url }}" class="btn" target="_blank">🔗 Visit Link</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif content.content_type == 'text' %}
+                <div class="text-container">
+                    {% if content.text_content %}
+                        <div class="text-content">
+                            {{ content.text_content|linebreaks }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif content.content_type == 'presentation' %}
+                <div class="presentation-container">
+                    {% if content.file %}
+                        <div class="presentation-preview">
+                            <iframe src="{{ content.file.url }}" class="presentation-iframe"></iframe>
+                            <div class="presentation-actions">
+                                <a href="{{ content.file.url }}" class="btn" target="_blank">📊 Download Presentation</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif content.content_type == 'audio' %}
+                <div class="audio-container">
+                    {% if content.file %}
+                        <audio controls class="content-audio">
+                            <source src="{{ content.file.url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    {% endif %}
+                </div>
+            {% elif content.content_type == 'interactive' %}
+                <div class="interactive-container">
+                    {% if content.url %}
+                        <iframe src="{{ content.url }}" class="interactive-iframe"></iframe>
+                    {% elif content.file %}
+                        <div class="interactive-file">
+                            <p>📁 Interactive Content: <a href="{{ content.file.url }}" target="_blank">{{ content.title }}</a></p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if user.profile.role == 'student' %}
+            <div class="content-actions">
+                {% if not progress.completed %}
+                    <a href="{% url 'mark_completed' content.id %}" class="btn btn-success">✅ Mark as Completed</a>
+                {% else %}
+                    <span class="completed-badge">✓ Completed</span>
+                {% endif %}
+            </div>
+
+            <div class="student-notes">
+                <h4>📝 Your Notes</h4>
+                <form method="post" id="note-form">
+                    {% csrf_token %}
+                    {{ note_form.note_text }}
+                    <button type="submit" class="btn btn-primary">💾 Save Note</button>
+                </form>
+                {% if student_note and student_note.note_text %}
+                    <div class="saved-note">
+                        <h5>Last updated: {{ student_note.updated_at|date:"M d, Y H:i" }}</h5>
+                        <div class="note-content">{{ student_note.note_text|linebreaks }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if user.profile.role == 'instructor' and course.instructor == user %}
+            <div class="instructor-actions">
+                <a href="#" class="btn btn-secondary">✏️ Edit Content</a>
+                <a href="#" class="btn btn-danger">🗑️ Delete Content</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const noteForm = document.getElementById('note-form');
+if (noteForm) {
+    noteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('{% url "save_note" content.id %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving your note.');
+        });
+    });
+}
+</script>
+{% endblock %}
